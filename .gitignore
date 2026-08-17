@@ -1,0 +1,39 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Test caches
+.pytest_cache/
+.pytest-tmp/
+.test-tmp/
+.codex-pytest-tmp/
+.codex-uv-cache/
+
+# SQLite databases (WAL mode produces sidecar files)
+*.db
+*.db-wal
+*.db-shm
+.fgrun/
+artifacts/
+
+# Secrets. Local credentials must never enter a commit or distribution archive.
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+secrets.*
+
+# Runtime state: the system writes real engram library entries and project
+# clusters here, so these are one real run away from holding verbatim LLM
+# session content.
+.pulse/
+.pulse_projects/

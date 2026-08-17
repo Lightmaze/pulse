@@ -1,0 +1,108 @@
+# Continuous integration for pulse-system.
+#
+# This workflow never injects provider credentials. Every default test must
+# therefore pass in a cold clone with no live-provider access.
+#
+# Tests marked `real` need a live provider and network. They are deselected by
+# the `addopts` setting in pyproject.toml, so plain `pytest` never attempts
+# them; the run below reports them as deselected.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Read-only by default: this workflow only needs the source it checks out.
+permissions:
+  contents: read
+
+# A repository/environment secret with one of these names must not silently
+# turn the default contract run into a provider test.
+env:
+  DEEPSEEK_API_KEY: ""
+  OPENAI_API_KEY: ""
+  ANTHROPIC_API_KEY: ""
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # Run both platforms to completion; a Windows-only path bug should not be
+      # masked by Linux failing first, and vice versa.
+      fail-fast: false
+      matrix:
+        # The project is developed on Windows and has been bitten by path
+        # handling before, so Windows is a first-class target, not an extra.
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7.0.0
+
+      # setup-uv stopped publishing moving major tags after v7, so `@v9` does
+      # not resolve; the full release tag below is the correct pin for v9.
+      - name: Install uv 0.11.1 and Python 3.12.13
+        uses: astral-sh/setup-uv@v9.0.0
+        with:
+          version: "0.11.1"
+          python-version: "3.12.13"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install Node 24.15.0
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: "24.15.0"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      # Node's bundled npm is not part of the Node SemVer contract. Pin it
+      # separately before entering web/, where devEngines rejects drift.
+      - name: Install npm 11.12.1
+        run: npm install --global npm@11.12.1
+
+      # --locked fails rather than silently re-resolving, so a lockfile that
+      # drifted from pyproject.toml is reported instead of papered over.
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Report the frozen toolchain
+        run: |
+          uv --version
+          uv run --no-sync python --version
+          node --version
+          npm --version
+
+      - name: Run the no-provider-key Python suite
+        run: >-
+          uv run --no-sync pytest -q -p no:cacheprovider
+          --basetemp "${{ runner.temp }}/pulse-pytest"
+
+      - name: Install Web dependencies from the lockfile
+        working-directory: web
+        run: npm ci
+
+      - name: Run Web tests
+        working-directory: web
+        run: npm test
+
+      - name: Type-check and cold-build the Web application
+        working-directory: web
+        run: >-
+          npm run build -- --outDir
+          "${{ runner.temp }}/pulse-web-dist" --emptyOutDir
+
+      - name: Cold-build wheel and source distribution
+        run: uv build --out-dir "${{ runner.temp }}/pulse-python-dist"
+
+      - name: Verify and cold-install both Python artifacts
+        run: >-
+          uv run --no-sync python tests/release_artifact_check.py
+          "${{ runner.temp }}/pulse-python-dist" --cold-install

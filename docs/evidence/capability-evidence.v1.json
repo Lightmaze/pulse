@@ -1,0 +1,136 @@
+{
+  "schema_version": "capability-evidence.v1",
+  "product_version": "0.2.0-alpha.1",
+  "statuses": [
+    "VERIFIED",
+    "FAILED",
+    "BLOCKED_BY_ENVIRONMENT",
+    "NOT_CLAIMED",
+    "NOT_APPLICABLE"
+  ],
+  "capabilities": [
+    {
+      "capability": "persistent_pi_session",
+      "e0_exists": "VERIFIED",
+      "e1_contract": "VERIFIED",
+      "e2_live": "NOT_CLAIMED",
+      "e3_release": "VERIFIED",
+      "e4_longitudinal": "NOT_APPLICABLE",
+      "claim": "alpha",
+      "evidence": [
+        "src/pulse_system/agent/harness/pi.py",
+        "tests/test_pi_harness.py",
+        "tests/test_runtime_harness_lifecycle.py"
+      ]
+    },
+    {
+      "capability": "task_relationship_and_role_lease",
+      "e0_exists": "VERIFIED",
+      "e1_contract": "VERIFIED",
+      "e2_live": "NOT_CLAIMED",
+      "e3_release": "VERIFIED",
+      "e4_longitudinal": "NOT_CLAIMED",
+      "claim": "alpha",
+      "evidence": [
+        "src/pulse_system/service/task_relationships.py",
+        "tests/test_task_relationship_api.py",
+        "tests/test_harness_role_leases.py"
+      ]
+    },
+    {
+      "capability": "causal_ledger_uncertain_recovery",
+      "e0_exists": "VERIFIED",
+      "e1_contract": "VERIFIED",
+      "e2_live": "NOT_CLAIMED",
+      "e3_release": "VERIFIED",
+      "e4_longitudinal": "NOT_APPLICABLE",
+      "claim": "alpha",
+      "evidence": [
+        "src/pulse_system/core/causality/ledger.py",
+        "tests/test_causal_ledger.py",
+        "tests/test_generation_recovery.py"
+      ]
+    },
+    {
+      "capability": "windows_process_tree_containment",
+      "e0_exists": "VERIFIED",
+      "e1_contract": "VERIFIED",
+      "e2_live": "NOT_CLAIMED",
+      "e3_release": "VERIFIED",
+      "e4_longitudinal": "NOT_APPLICABLE",
+      "claim": "alpha",
+      "evidence": [
+        "src/pulse_system/agent/harness/process_containment.py",
+        "tests/test_process_containment.py"
+      ]
+    },
+    {
+      "capability": "external_mcp_contract",
+      "e0_exists": "VERIFIED",
+      "e1_contract": "VERIFIED",
+      "e2_live": "NOT_CLAIMED",
+      "e3_release": "NOT_CLAIMED",
+      "e4_longitudinal": "NOT_APPLICABLE",
+      "claim": "alpha",
+      "evidence": [
+        "src/pulse_system/agent/harness/mcp_runtime.py",
+        "tests/test_harness_mcp_runtime.py",
+        "tests/test_harness_mcp_transport.py"
+      ]
+    },
+    {
+      "capability": "local_api_capability_profiles",
+      "e0_exists": "VERIFIED",
+      "e1_contract": "VERIFIED",
+      "e2_live": "NOT_CLAIMED",
+      "e3_release": "VERIFIED",
+      "e4_longitudinal": "NOT_APPLICABLE",
+      "claim": "alpha",
+      "evidence": [
+        "src/pulse_system/interaction/api/security.py",
+        "tests/test_api_security.py"
+      ]
+    },
+    {
+      "capability": "sqlite_schema_migration_v3",
+      "e0_exists": "VERIFIED",
+      "e1_contract": "VERIFIED",
+      "e2_live": "NOT_CLAIMED",
+      "e3_release": "VERIFIED",
+      "e4_longitudinal": "NOT_APPLICABLE",
+      "claim": "alpha",
+      "evidence": [
+        "src/pulse_system/substrate/storage/migrations/0006_dendritic_window_evidence.sql",
+        "tests/test_storage_migrations.py"
+      ]
+    },
+    {
+      "capability": "reproducible_0_2_release",
+      "e0_exists": "VERIFIED",
+      "e1_contract": "VERIFIED",
+      "e2_live": "NOT_APPLICABLE",
+      "e3_release": "VERIFIED",
+      "e4_longitudinal": "NOT_APPLICABLE",
+      "claim": "alpha",
+      "evidence": [
+        "scripts/release_check.sh",
+        "tests/release_artifact_check.py",
+        "tests/test_release_contract.py"
+      ]
+    },
+    {
+      "capability": "browser_workbench",
+      "e0_exists": "VERIFIED",
+      "e1_contract": "VERIFIED",
+      "e2_live": "NOT_CLAIMED",
+      "e3_release": "VERIFIED",
+      "e4_longitudinal": "NOT_APPLICABLE",
+      "claim": "alpha",
+      "evidence": [
+        "web/package.json",
+        "web/src/App.tsx",
+        "web/src/harness.test.ts"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+[project]
+name = "pulse-system"
+version = "0.2.0a1"
+description = "Durable single-host runtime for persistent agent teams and long-running Pi Harness sessions."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Lightmaze Contributors" }]
+keywords = [
+    "llm",
+    "ai-agents",
+    "multi-agent",
+    "agent-orchestration",
+    "agent-runtime",
+    "agent-harness",
+    "persistent-agents",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "httpx>=0.28.1",
+    "numpy>=2.5.1",
+    "openai>=1.0",
+    "sympy>=1.14.0",
+]
+
+[project.scripts]
+# One command, one organism. Needs the observatory extra for the server.
+pulse = "pulse_system.service.serve:main"
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.40"]
+# Observatory API and UI. Optional so the engine core stays dependency-lean:
+# the sideband server is an observer, never on the tick path.
+observatory = ["fastapi>=0.115", "uvicorn>=0.32"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pulse_system"]
+
+# The sdist is the artifact most likely to be mirrored and archived beyond our
+# reach, so it is built as a whitelist, not a blocklist. `include` selects;
+# hatchling adds pyproject.toml, the readme and every license-file on its own.
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/README.zh-CN.md",
+    "/ESSENCE.md",
+    "/ESSENCE.zh-CN.md",
+    "/ARCHITECTURE.md",
+    "/ARCHITECTURE.zh-CN.md",
+    "/PUBLIC_RELEASE.md",
+    "/PUBLIC_RELEASE.zh-CN.md",
+    "/CHANGELOG.md",
+    "/CHANGELOG.zh-CN.md",
+    "/CONTRIBUTING.md",
+    "/CONTRIBUTING.zh-CN.md",
+    "/SECURITY.md",
+    "/SECURITY.zh-CN.md",
+]
+# Redundant while `include` stays this narrow -- kept because `exclude` wins
+# over `include`, so history and run data stay out even if the whitelist is later
+# widened by someone who does not know why it was narrow.
+exclude = [
+    "/docs",
+    "/web",
+    "/.fgrun",
+    "/dist",
+    "*.db",
+    "*.db-wal",
+    "*.db-shm",
+    "*.jsonl",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    # release_check.sh validates the CI workflow by parsing it. Without this the
+    # check errors out instead of checking -- a guard that cannot guard.
+    "pyyaml>=6.0",
+    "pytest-asyncio>=0.24",
+    "fastapi>=0.115",
+    "uvicorn>=0.32",
+]
+
+[tool.uv]
+required-version = "==0.11.1"
+
+[tool.pytest.ini_options]
+markers = [
+    "real: requires a real LLM API key and network access (excluded by default)",
+]
+addopts = "-m 'not real'"

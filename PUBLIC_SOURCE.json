@@ -1,0 +1,9 @@
+{
+  "public_history_mode": "clean_root",
+  "release": "0.2.0-alpha.1",
+  "schema_version": 2,
+  "snapshot_file_count": 322,
+  "snapshot_sha256": "b932b8e6867a02a749ef6233065ab84331a45bb94fd8691fb1ba8a8b2a42aa09",
+  "snapshot_digest_format": "sha256 of LF-terminated, path-sorted <file-sha256>  <relative-path> records; PUBLIC_SOURCE.json excluded",
+  "source_history_included": false
+}
